@@ -262,12 +262,18 @@ export const uploadDocument = async (req: Request, res: Response) => {
       }
     });
 
-    const maxDocs = profile?.subscriptions?.[0]?.plan?.max_documents || 10;
+    let maxDocs = profile?.subscriptions?.[0]?.plan?.max_documents ?? 10;
+
+    // Force unlimited for admins regardless of plan
+    if (user.role === 'admin' || user.role === 'super_admin') {
+      maxDocs = -1;
+    }
+
     const currentCount = await prisma.document.count({
       where: { uploaded_by: user.id }
     });
 
-    if (currentCount >= maxDocs) {
+    if (maxDocs !== -1 && currentCount >= maxDocs) {
       // Clean up uploaded file
       fs.unlinkSync(file.path);
       return res.status(403).json({ error: 'Document limit reached' });
@@ -462,11 +468,21 @@ export const getDocumentUsage = async (req: Request, res: Response) => {
             }
         });
 
-        const max = profile?.subscriptions?.[0]?.plan?.max_documents || 10;
+        let max = 10;
+        const planMax = profile?.subscriptions?.[0]?.plan?.max_documents;
+        
+        if (planMax !== undefined) {
+            max = planMax;
+        }
+
+        // Force unlimited for admins regardless of plan
+        if (user.role === 'admin' || user.role === 'super_admin') {
+            max = -1;
+        }
 
         res.json({
-            current: count,
-            max: max
+            count,
+            max_limit: max
         });
     } catch (error) {
         console.error('Error getting document usage:', error);

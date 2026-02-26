@@ -5,14 +5,14 @@ import path from 'path';
 import fs from 'fs';
 
 // Load environment variables
-const envPath = process.env.NODE_ENV === 'production' 
-  ? path.resolve(__dirname, '../.env') 
-  : path.resolve(__dirname, '../.env');
+// Priority:
+// 1. server/.env (if exists)
+// 2. root/.env (if exists)
+const serverEnvPath = path.resolve(__dirname, '../.env');
+const rootEnvPath = path.resolve(__dirname, '../../.env');
 
-dotenv.config({ path: envPath });
-
-// Also try loading from root
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+dotenv.config({ path: serverEnvPath });
+dotenv.config({ path: rootEnvPath });
 
 import chatRoutes from './routes/chat';
 import sessionRoutes from './routes/sessions';
@@ -34,7 +34,22 @@ const port = process.env.PORT || 3000;
 
 const corsOrigins = (process.env.CORS_ORIGINS || '').split(',').map(o => o.trim()).filter(Boolean);
 app.use(cors({
-  origin: corsOrigins.length ? corsOrigins : true,
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // In development, allow localhost
+    if (process.env.NODE_ENV !== 'production' && origin.includes('localhost')) {
+      return callback(null, true);
+    }
+
+    if (corsOrigins.indexOf(origin) !== -1 || corsOrigins.includes('*')) {
+      callback(null, true);
+    } else {
+      console.log('Blocked by CORS:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET','HEAD','PUT','PATCH','POST','DELETE'],
   credentials: true
 }));
@@ -66,17 +81,10 @@ app.get('/api/health', (req, res) => {
 
 // Serve frontend build (dist) for non-API routes
 const distPath = path.resolve(__dirname, '../../dist');
-if (fs.existsSync(distPath)) {
-  app.use(express.static(distPath));
-  app.get('*', (req, res) => {
-    if (req.path.startsWith('/api')) {
-      return res.status(404).json({ error: 'Not found' });
-    }
-    res.sendFile(path.join(distPath, 'index.html'));
-  });
-}
+
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`CORS Origins: ${process.env.CORS_ORIGINS}`);
 });
