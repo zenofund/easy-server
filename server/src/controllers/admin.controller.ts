@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { PrismaClient, Role, InspectionStatus, TransactionStatus, CarStatus, OfferStatus, TransactionType, UserStatus } from '@prisma/client';
+import { PrismaClient, Role, InspectionStatus, TransactionStatus, CarStatus, OfferStatus, TransactionType, UserStatus, IdentityStatus } from '@prisma/client';
 import { sendEmail } from '../utils/notifications';
 
 const prisma = new PrismaClient();
@@ -464,6 +464,100 @@ export const getAdminFinanceSummary = async (req: Request, res: Response) => {
   } catch (error) {
     console.error('Error fetching admin finance summary:', error);
     res.status(500).json({ error: 'Failed to fetch finance summary' });
+  }
+};
+
+export const getPendingSellerVerifications = async (req: Request, res: Response) => {
+  try {
+    const pendingSellers = await prisma.sellerProfile.findMany({
+      where: {
+        identityStatus: IdentityStatus.PENDING
+      },
+      include: {
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+            phone: true,
+            avatar: true
+          }
+        }
+      },
+      orderBy: {
+        // Assuming we want oldest first
+        id: 'asc' // or if there's an updatedAt, we'd use that
+      }
+    });
+
+    res.json(pendingSellers);
+  } catch (error) {
+    console.error('Error fetching pending seller verifications:', error);
+    res.status(500).json({ error: 'Failed to fetch pending verifications' });
+  }
+};
+
+export const verifySellerIdentity = async (req: Request, res: Response) => {
+  try {
+    const { sellerId } = req.params;
+    const { status, reason } = req.body;
+
+    if (![IdentityStatus.APPROVED, IdentityStatus.REJECTED].includes(status)) {
+      return res.status(400).json({ error: 'Invalid verification status' });
+    }
+
+    if (status === IdentityStatus.REJECTED && !reason) {
+      return res.status(400).json({ error: 'Rejection reason is required' });
+    }
+
+    const seller = await prisma.sellerProfile.findUnique({
+      where: { id: sellerId },
+      include: { user: true }
+    });
+
+    if (!seller) {
+      return res.status(404).json({ error: 'Seller profile not found' });
+    }
+
+    const updatedSeller = await prisma.sellerProfile.update({
+      where: { id: sellerId },
+      data: {
+        identityStatus: status,
+        rejectionReason: status === IdentityStatus.REJECTED ? reason : null,
+      }
+    });
+
+    // Notify the user via email or in-app notification
+    const subject = status === IdentityStatus.APPROVED 
+      ? 'Your Identity Verification has been Approved!'
+      : 'Update on Your Identity Verification';
+
+    const message = status === IdentityStatus.APPROVED
+      ? `Hello ${seller.user.firstName},\n\nGreat news! Your identity verification documents have been approved. You can now access all features on Huce Automarts.`
+      : `Hello ${seller.user.firstName},\n\nUnfortunately, we could not approve your identity verification for the following reason:\n\n${reason}\n\nPlease log in to your dashboard to upload a new document.`;
+
+    // Try sending email but don't fail if it doesn't send
+    sendEmail(seller.user.email, subject, message).catch(err => 
+      console.error('Failed to send verification email:', err)
+    );
+
+    // Create in-app notification
+    await prisma.notification.create({
+      data: {
+        userId: seller.user.id,
+        title: status === IdentityStatus.APPROVED ? 'Identity Approved' : 'Identity Verification Update',
+        message: status === IdentityStatus.APPROVED 
+          ? 'Your identity documents have been approved.'
+          : 'Your identity documents need attention.',
+        type: 'SYSTEM',
+        link: '/seller-verification'
+      }
+    });
+
+    res.json(updatedSeller);
+  } catch (error) {
+    console.error('Error verifying seller identity:', error);
+    res.status(500).json({ error: 'Failed to verify seller identity' });
   }
 };
 

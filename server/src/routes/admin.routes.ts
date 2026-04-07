@@ -31,6 +31,10 @@ router.get('/config', adminController.getSystemConfig);
 router.post('/config', adminController.updateSystemConfig);
 router.post('/config/test-smtp', adminController.testSMTPDeliverability);
 
+// Seller Verification Management
+router.get('/sellers/pending-verification', adminController.getPendingSellerVerifications);
+router.patch('/sellers/:sellerId/verify', adminController.verifySellerIdentity);
+
 // Subscription Plans
 router.get('/subscriptions/plans', subscriptionController.getSubscriptionPlans);
 router.post('/subscriptions/plans', subscriptionController.createSubscriptionPlan);
