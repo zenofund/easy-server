@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const viewHistory_controller_1 = require("../controllers/viewHistory.controller");
+const auth_middleware_1 = require("../middleware/auth.middleware");
+const router = (0, express_1.Router)();
+router.post('/record', auth_middleware_1.authenticateToken, viewHistory_controller_1.recordView);
+router.get('/', auth_middleware_1.authenticateToken, viewHistory_controller_1.getViewHistory);
+router.delete('/clear', auth_middleware_1.authenticateToken, viewHistory_controller_1.clearHistory);
+router.delete('/:carId', auth_middleware_1.authenticateToken, viewHistory_controller_1.deleteHistoryItem);
+exports.default = router;

@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const message_controller_1 = require("../controllers/message.controller");
+const auth_middleware_1 = require("../middleware/auth.middleware");
+const router = (0, express_1.Router)();
+router.get('/', auth_middleware_1.authenticateToken, message_controller_1.getMessages);
+router.post('/', auth_middleware_1.authenticateToken, message_controller_1.sendMessage);
+router.get('/unread/count', auth_middleware_1.authenticateToken, message_controller_1.getUnreadCount);
+router.patch('/:id/read', auth_middleware_1.authenticateToken, message_controller_1.markAsRead);
+exports.default = router;

@@ -1,0 +1,83 @@
+So when a user clicks on Customer Support, they see this page as the attachement: 
+
+Remmember the dashboard design is consistent, only the image speficic content can change
+
+
+
+
+
+
+The Wallet Tab/Sidebar:
+
+So when a user clicks on Wallet, they see this page as the attachement: This page was already designed and implemented for the Seller Dashboa. It Could be adapted/reuse for the Buyer to avoid duplicating pages. Ensure it's adapted for the use case
+
+Remmember the dashboard design is consistent, only the image spefici conte nt can change
+
+
+
+So when a user verfies their account, they see this page as the attachement: This page was already designed and implemented for the auth pages. It Could be adapted/reuse for the Successful signup and Forget Password Success Update. This avoids duplicating pages. Ensure it's adapted for the use case
+
+Remmember to be consistent with the auth pages
+
+
+The admin create all the Subscription plans. The access flags include:
+- Car Listing
+- Analytics and engagement insight
+- Feature Displayed Listing
+- 
+
+
+Admin Credentials
+
+- Email : superhero@huceautos.com
+- Password : Huce2026@@##
+- Role : ADMIN
+The admin user is n
+
+Resend: re_HXN5VKs6_Jzh37F8ppCkVhG8tCLF5BUwt
+
+₦1,
+
+User Roles:
+Staff 
+Payroll Officer
+Reviewer
+Approver
+Auditor
+Administrator
+HR Manager
+Cashier
+
+Addresss
+Phone number
+Employment/Resumption Date (What is the DB correspondence?)
+current_posting (What is the DB correspondence?)
+
+
+
+cd src/backend
+npm run start:dev
+
+
+GET http://localhost:3000/api/v1/loans/guarantors?guarantor_staff_id=a41a0a5f-11b1-4c7d-b537-70d7e15f55b9 500 (Internal Server Error)
+makeApiRequest @ loanAPI.ts:29
+getMyGuarantorRequests @ loanAPI.ts:322
+loadData @ StaffPortalPage.tsx:171
+await in loadData
+(anonymous) @ StaffPortalPage.tsx:94
+commitHookEffectListMount @ chunk-YFB5YCE7.js?v=93f95f63:16963
+commitPassiveMountOnFiber @ chunk-YFB5YCE7.js?v=93f95f63:18206
+commitPassiveMountEffects_complete @ chunk-YFB5YCE7.js?v=93f95f63:18179
+commitPassiveMountEffects_begin @ chunk-YFB5YCE7.js?v=93f95f63:18169
+commitPassiveMountEffects @ chunk-YFB5YCE7.js?v=93f95f63:18159
+flushPassiveEffectsImpl @ chunk-YFB5YCE7.js?v=93f95f63:19543
+flushPassiveEffects @ chunk-YFB5YCE7.js?v=93f95f63:19500
+(anonymous) @ chunk-YFB5YCE7.js?v=93f95f63:19381
+workLoop @ chunk-YFB5YCE7.js?v=93f95f63:197
+flushWork @ chunk-YFB5YCE7.js?v=93f95f63:176
+performWorkUntilDeadline @ chunk-YFB5YCE7.js?v=93f95f63:384Understand this error
+StaffPortalPage.tsx:178 Loans error: Error: Internal server error
+    at makeApiRequest (loanAPI.ts:39:11)
+    at async Object.getMyGuarantorRequests (loanAPI.ts:322:24)
+    at async Promise.all (:5173/index 3)
+    at async loadData (StaffPortalPage.tsx:167:50)

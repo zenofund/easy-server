@@ -1,0 +1,16 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const inspection_controller_1 = require("../controllers/inspection.controller");
+const auth_middleware_1 = require("../middleware/auth.middleware");
+const upload_middleware_1 = require("../middleware/upload.middleware");
+const router = (0, express_1.Router)();
+router.post('/', auth_middleware_1.authenticateToken, inspection_controller_1.createInspectionRequest);
+router.get('/car/:carId', auth_middleware_1.authenticateToken, inspection_controller_1.getInspectionsByCarId);
+router.get('/inspector', auth_middleware_1.authenticateToken, inspection_controller_1.getInspectorInspections);
+router.get('/stats', auth_middleware_1.authenticateToken, inspection_controller_1.getInspectorStats);
+router.get('/available', auth_middleware_1.authenticateToken, inspection_controller_1.getAvailableInspections);
+router.post('/:inspectionId/assign', auth_middleware_1.authenticateToken, inspection_controller_1.assignInspector);
+router.post('/:inspectionId/report', auth_middleware_1.authenticateToken, inspection_controller_1.submitInspectionReport);
+router.post('/upload-photos', auth_middleware_1.authenticateToken, upload_middleware_1.upload.array('photos', 10), inspection_controller_1.uploadInspectionPhotos);
+exports.default = router;

@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const offer_controller_1 = require("../controllers/offer.controller");
+const auth_middleware_1 = require("../middleware/auth.middleware");
+const router = (0, express_1.Router)();
+router.get('/seller', auth_middleware_1.authenticateToken, offer_controller_1.getSellerOffers);
+router.get('/car/:carId', auth_middleware_1.authenticateToken, offer_controller_1.getOffersByCarId);
+router.post('/', auth_middleware_1.authenticateToken, offer_controller_1.createOffer);
+router.post('/:id/accept', auth_middleware_1.authenticateToken, offer_controller_1.acceptOffer);
+router.post('/:id/reject', auth_middleware_1.authenticateToken, offer_controller_1.rejectOffer);
+router.post('/:id/cancel', auth_middleware_1.authenticateToken, offer_controller_1.cancelOffer);
+router.post('/:id/counter', auth_middleware_1.authenticateToken, offer_controller_1.counterOffer);
+exports.default = router;

@@ -1,0 +1,102 @@
+<image_1>
+Top-left (header area):
+
+- “Back” (left arrow icon + text; light gray; positioned at top-left)
+Main title:
+
+- “Add New Listing” (bold, dark text; centered-left near top)
+Section subtitle:
+
+- “Car Overview” (medium-weight, dark text; below the title, aligned left)
+Progress bar (3 steps):
+
+- Circle “1” (white numeral inside solid dark-green filled circle with green progress segment to the right)
+- “2” (light gray numeral inside light-gray outlined circle; gray progress segment)
+- “3” (light gray numeral inside light-gray outlined circle; gray progress segment)
+- The three steps are arranged horizontally from left to right.
+Form fields (3 columns, 5 rows; each field is a rounded rectangle input with light border and subtle shadow; most have a right-side downward chevron indicating dropdown):
+Column 1 (left):
+
+1. Label: “Car Make” (dark text)
+   Placeholder: “Select Car Make” (light gray)
+   Icon: Downward chevron at right
+2. Label: “Price” (dark text)
+   Placeholder: “Select Car Price” (light gray)
+   Icon: Downward chevron at right
+3. Label: “Mileage” (dark text)
+   Placeholder: “Select Mileage” (light gray)
+   Icon: Downward chevron at right
+4. Label: “Drive Type” (dark text)
+   Placeholder: “Select Drive Type” (light gray)
+   Icon: Downward chevron at right
+5. Label: “Color” (dark text)
+   Placeholder: “Select Car Condition” (light gray) [appears mismatched to label]
+   Icon: Downward chevron at right
+Column 2 (middle):
+
+1. Label: “Model” (dark text)
+   Placeholder: “Select Car Model” (light gray)
+   Icon: Downward chevron at right
+2. Label: “Location” (dark text)
+   Placeholder: “Select Location” (light gray)
+   Icon: Downward chevron at right
+3. Label: “Fuel Type” (dark text)
+   Placeholder: “Select Fuel Type” (light gray)
+   Icon: Downward chevron at right
+4. Label: “Condition” (dark text)
+   Placeholder: “Select Car Condition” (light gray)
+   Icon: Downward chevron at right
+5. Label: “VIN” (dark text)
+   Placeholder: “Enter VIN Number” (light gray; text input without dropdown icon)
+Column 3 (right):
+
+1. Label: “Year” (dark text)
+   Placeholder: “Select Car Year” (light gray)
+   Icon: Downward chevron at right
+2. Label: “Car Type” (dark text)
+   Placeholder: “Select Type” (light gray)
+   Icon: Downward chevron at right
+3. Label: “Transmission” (dark text)
+   Placeholder: “Select Transmission” (light gray)
+   Icon: Downward chevron at right
+4. Label: “Door” (dark text)
+   Placeholder: “Select Fuel Type” (light gray) [appears mismatched to label]
+   Icon: Downward chevron at right
+5. Label: “Price” (dark text)
+   Placeholder: “Enter Car Price” (light gray; text input without dropdown icon)
+Bottom action button:
+
+- “Next” (centered white text on a full-width dark-green rounded button)
+Modal and overlay style notes:
+
+- Modal: Large white card with rounded corners; drop shadow; centered.
+- Overlay: Semi-transparent dark backdrop covering the page behind the modal (background page content faintly visible).
+- Text color hierarchy: Labels in dark gray/black; placeholders in light gray; active step indicator and primary button in dark green.
+  </image_1> Updating the Modal Design
+I'm currently focused on refactoring the``MultiStepListingModal`` to match the design spec. The initial step is reducing the number of steps from five to the required three. This simplification is a priority before tackling visual alignment and component adjustments. I will then work on the layout of the required information within each of the three steps.
+
+Revising Step One Logic
+
+I'm zeroing in on the layout for Step 1, "Car Overview." The 3-column, 5-row structure is clear, but the "Price" fields are causing some confusion. I'm leaning toward implementing a "Price Range" dropdown in column 1 and a standard "Price" input in column 3. This matches standard listing practices. I'll need to carefully review the image to confirm the field types and their data validations.
+
+Defining Step 1 Fields
+
+I'm now determining the correct field types for Step 1, "Car Overview." The two "Price" fields are throwing me. I'm opting for a "Price Range" dropdown in Column 1 and a standard "Price" input in Column 3, as the image implies. I will check the model and design to see if I should clarify. I will then review the data validations.
+
+Analyzing Form Field Data
+
+I'm now diving into the specifics of the data within Step 1. The image suggests a "Price Range" dropdown, which is confirmed, and a standard "Price" input. I'm working through the available data for each field, ensuring the correct data types and input validations are in place for all fifteen fields. I'm also confirming the size of the modal and considering the background overlay.
+
+Defining Overlay and Sizing
+
+
+
+The modal's backdrop overlay is my current focus. I'm exploring the nuances of the "Adjust the modal overlay to not cover the entire page" request. My approach is to center the modal content, with a semi-transparent backdrop. I'll maintain the current``max-w-[800px]`` width, and the backdrop's opacity, as per the image. This achieves the desired look, while keeping to existing code.
+
+Mapping Step One Fields
+
+My immediate task is to map out the fields within Step 1, "Car Overview", to the form's structure. I'm focusing on the correct data types, particularly for the two "Price" fields, to ensure a seamless user experience. I will implement a "Price Range" dropdown, as implied. Additionally, I will add the new field for the modal backdrop overlay.
+
+Mapping Field Data Types
+
+I'm presently confirming the field types for Step 1, "Car Overview," and updating the``formData`` state. I'm focusing on "Price" which seems confusing. My priority is aligning field types to the image and establishing the data structure for the form. I'll also add fields like "Location" and "VIN."
