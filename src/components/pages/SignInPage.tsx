@@ -59,6 +59,12 @@ export function SignInPage() {
         }, 100);
         return;
       }
+      
+      // Handle pending or deactivated user
+      if (error.response?.status === 403 && error.response?.data?.status) {
+        toast.error(error.response.data.error);
+        return;
+      }
 
       const errorMessage = error.response?.data?.error || 'Failed to sign in. Please check your credentials.';
       toast.error(errorMessage);

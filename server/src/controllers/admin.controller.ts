@@ -476,11 +476,13 @@ export const getPendingSellerVerifications = async (req: Request, res: Response)
       include: {
         user: {
           select: {
+            id: true,
             firstName: true,
             lastName: true,
             email: true,
             phone: true,
-            avatar: true
+            avatar: true,
+            createdAt: true
           }
         }
       },
@@ -499,21 +501,22 @@ export const getPendingSellerVerifications = async (req: Request, res: Response)
 
 export const verifySellerIdentity = async (req: Request, res: Response) => {
   try {
-    const { sellerId } = req.params;
-    const { status, reason } = req.body;
+    const sellerId = String(req.params.sellerId);
+    const { status, reason, rejectionReason } = req.body;
+    const actualReason = reason || rejectionReason;
 
     if (![IdentityStatus.APPROVED, IdentityStatus.REJECTED].includes(status)) {
       return res.status(400).json({ error: 'Invalid verification status' });
     }
 
-    if (status === IdentityStatus.REJECTED && !reason) {
+    if (status === IdentityStatus.REJECTED && !actualReason) {
       return res.status(400).json({ error: 'Rejection reason is required' });
     }
 
     const seller = await prisma.sellerProfile.findUnique({
       where: { id: sellerId },
       include: { user: true }
-    });
+    }) as any;
 
     if (!seller) {
       return res.status(404).json({ error: 'Seller profile not found' });
@@ -523,7 +526,8 @@ export const verifySellerIdentity = async (req: Request, res: Response) => {
       where: { id: sellerId },
       data: {
         identityStatus: status,
-        rejectionReason: status === IdentityStatus.REJECTED ? reason : null,
+        rejectionReason: status === IdentityStatus.REJECTED ? String(actualReason) : null,
+        verified: status === IdentityStatus.APPROVED ? true : seller.verified
       }
     });
 
@@ -534,7 +538,7 @@ export const verifySellerIdentity = async (req: Request, res: Response) => {
 
     const message = status === IdentityStatus.APPROVED
       ? `Hello ${seller.user.firstName},\n\nGreat news! Your identity verification documents have been approved. You can now access all features on Huce Automarts.`
-      : `Hello ${seller.user.firstName},\n\nUnfortunately, we could not approve your identity verification for the following reason:\n\n${reason}\n\nPlease log in to your dashboard to upload a new document.`;
+      : `Hello ${seller.user.firstName},\n\nUnfortunately, we could not approve your identity verification for the following reason:\n\n${actualReason}\n\nPlease log in to your dashboard to upload a new document.`;
 
     // Try sending email but don't fail if it doesn't send
     sendEmail(seller.user.email, subject, message).catch(err => 

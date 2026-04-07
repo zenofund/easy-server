@@ -5,6 +5,7 @@ import { AdminHomeContent } from './AdminHomeContent';
 import { AdminFinanceContent } from './AdminFinanceContent';
 import { AdminUserMgtContent } from './AdminUserMgtContent';
 import { AdminSubscriptionsContent } from './AdminSubscriptionsContent';
+import { AdminVerificationsContent } from './AdminVerificationsContent';
 import { AdminSettingsView } from './AdminSettingsView';
 import { 
   AdminHomeSkeleton, 
@@ -19,11 +20,12 @@ import { CustomerSupportView } from '../pages/CustomerSupportView';
 import imgLogo from "figma:asset/33fdad934e5e2e869921ffdcb711b343ad08d8b9.png";
 import { UserAvatar } from '../UserAvatar';
 
-type AdminTab = 'home' | 'user-mgt' | 'car-inventory' | 'subscriptions' | 'finances' | 'customer-support' | 'cms' | 'settings';
+type AdminTab = 'home' | 'user-mgt' | 'verifications' | 'car-inventory' | 'subscriptions' | 'finances' | 'customer-support' | 'cms' | 'settings';
 
 const TABS: { id: AdminTab; label: string }[] = [
   { id: 'home', label: 'Home' },
   { id: 'user-mgt', label: 'User Mgt' },
+  { id: 'verifications', label: 'Verifications' },
   { id: 'car-inventory', label: 'Car Inventory' },
   { id: 'subscriptions', label: 'Subscriptions' },
   { id: 'finances', label: 'Finances' },
@@ -349,6 +351,7 @@ export function AdminLayout() {
             {activeTab === 'finances' && <AdminFinanceSkeleton />}
             {activeTab === 'settings' && <AdminSettingsSkeleton />}
             {activeTab === 'user-mgt' && <AdminManagementSkeleton title="User Management" />}
+            {activeTab === 'verifications' && <AdminManagementSkeleton title="Verifications" />}
             {activeTab === 'car-inventory' && <AdminManagementSkeleton title="Car Inventory" />}
             {activeTab === 'subscriptions' && <AdminSubscriptionsSkeleton />}
             {activeTab === 'cms' && <AdminCMSSkeleton />}
@@ -359,6 +362,7 @@ export function AdminLayout() {
             {activeTab === 'home' && <AdminHomeContent />}
             {activeTab === 'finances' && <AdminFinanceContent />}
             {activeTab === 'user-mgt' && <AdminUserMgtContent />}
+            {activeTab === 'verifications' && <AdminVerificationsContent />}
             {activeTab === 'car-inventory' && <PlaceholderContent title="Car Inventory" />}
             {activeTab === 'subscriptions' && <AdminSubscriptionsContent />}
             {activeTab === 'customer-support' && (
